@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\HotelController;
+use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +17,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::resource('hotels', HotelController::class);
+
+Route::group(['prefix' => 'dashboard'], function() {
+    Route::view('/', 'dashboard/dashboard');
+    Route::get('reservations/create/{id}', [ReservationController::class, 'create'])->name('products.create');
+    Route::resource('reservations', ReservationController::class)->except('create');
+});
