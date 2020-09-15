@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
 use App\Models\Hotel;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -15,6 +16,7 @@ class ReservationController extends Controller
      */
     public function index() {
         $reservations = Reservation::with('room', 'room.hotel')
+          ->where('user_id',  $user_id = Auth::id())
           ->orderBy('arrival', 'asc')
           ->get();
   
@@ -40,7 +42,9 @@ class ReservationController extends Controller
        */
       public function store(Request $request)
       {
-        $request->request->add(['user_id' => 1]);
+        $user_id = Auth::id();
+        $request->request->add(['user_id' => $user_id]);
+        
         Reservation::create($request->all());
   
         return redirect('dashboard/reservations')->with('success', 'Reservation created!');
@@ -85,7 +89,7 @@ class ReservationController extends Controller
        */
       public function update(Request $request, Reservation $reservation)
       {
-        $reservation->user_id = 1;
+        $user_id = Auth::id();
   
         $reservation->save();
         return redirect('dashboard/reservations')->with('success', 'Successfully updated your reservation!');
