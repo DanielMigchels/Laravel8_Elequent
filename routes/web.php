@@ -24,7 +24,7 @@ Auth::routes();
 
 Route::resource('hotels', HotelController::class);
 
-Route::group(['prefix' => 'dashboard'], function() {
+Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
     Route::view('/', 'dashboard/dashboard');
     Route::get('reservations/create/{id}', [ReservationController::class, 'create'])->name('products.create');
     Route::resource('reservations', ReservationController::class)->except('create');
